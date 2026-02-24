@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Física Geral — Curso Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --ink: #1a1410;
+  --muted: #7a6e62;
+  --border: #d4c9b8;
+  --accent-1: #c0392b;
+  --accent-2: #2471a3;
+  --accent-3: #1e8449;
+  --accent-4: #d4890a;
+  --accent-5: #7d3c98;
+  --surface: #fff9f0;
+  --surface2: #ede8de;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  line-height: 1.7;
+}
+
+/* NOISE TEXTURE */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* SIDEBAR NAV */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 260px;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 32px 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  padding: 0 24px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.sidebar-logo-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--bg);
+}
+
+.sidebar-progress-wrap {
+  padding: 0 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 8px;
+}
+
+.sidebar-progress-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 8px;
+}
+
+.sidebar-progress-bar {
+  height: 2px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.sidebar-progress-fill {
+  height: 100%;
+  background: var(--accent-4);
+  width: 0%;
+  transition: width 0.8s ease;
+}
+
+.sidebar-progress-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+}
+
+.nav-section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 12px 24px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.95);
+}
+
+.nav-item.active {
+  border-left-color: var(--accent-4);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.nav-item.done {
+  color: rgba(255,255,255,0.4);
+}
+
+.nav-item.done::after {
+  content: '✓';
+  margin-left: auto;
+  font-size: 11px;
+  color: #4ade80;
+}
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-sub {
+  font-size: 11px;
+  padding: 6px 24px 6px 46px;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-sub:hover { color: rgba(255,255,255,0.7); }
+
+/* MAIN */
+.main {
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+/* HERO */
+.hero {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 80px 80px 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: 'φ';
+  position: absolute;
+  right: 60px; bottom: -40px;
+  font-family: 'Playfair Display', serif;
+  font-size: 320px;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent-4);
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent-4);
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+}
+
+.stat {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 14px;
+  min-width: 100px;
+}
+
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* CONTENT AREA */
+.content {
+  padding: 0;
+}
+
+/* CHAPTER */
+.chapter {
+  border-bottom: 1px solid var(--border);
+}
+
+.chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 40px 80px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.chapter-header:hover { background: var(--surface2); }
+
+.chapter-num-badge {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.chapter-info { flex: 1; }
+
+.chapter-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.chapter-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.chapter-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.chapter-toggle {
+  font-size: 20px;
+  color: var(--muted);
+  transition: transform 0.3s;
+  font-family: monospace;
+}
+
+.chapter-header.open .chapter-toggle { transform: rotate(180deg); }
+
+.chapter-status-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.chapter-status-badge.done {
+  border-color: #4ade80;
+  color: #16a34a;
+  background: rgba(74,222,128,0.08);
+}
+
+/* CHAPTER BODY */
+.chapter-body {
+  display: none;
+  padding: 0 80px 60px;
+  animation: fadeIn 0.3s ease;
+}
+
+.chapter-body.open { display: block; }
+
+/* SECTION */
+.section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon { font-size: 20px; }
+
+.prose {
+  font-size: 15px;
+  color: #2d2520;
+  line-height: 1.85;
+  margin-bottom: 20px;
+  max-width: 780px;
+}
+
+.prose strong { color: var(--ink); font-weight: 500; }
+
+/* FORMULA BOX */
+.formula-box {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 24px 32px;
+  margin: 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.formula-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--accent-4);
+}
+
+.formula-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+
+.formula-main {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  color: var(--accent-4);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.formula-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+}
+
+/* DERIVATION */
+.derivation {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin: 20px 0;
+}
+
+.deriv-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 14px;
+}
+
+.deriv-steps {
+  display: grid;
+  gap: 10px;
+}
+
+.deriv-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.deriv-step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-2);
+  background: rgba(36,113,163,0.1);
+  border: 1px solid rgba(36,113,163,0.2);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.deriv-step-text { color: var(--ink); line-height: 1.6; }
+.deriv-step-eq {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-2);
+  display: block;
+  margin-top: 4px;
+}
+
+/* EXAMPLE */
+.example-box {
+  background: linear-gradient(135deg, rgba(30,132,73,0.06), rgba(30,132,73,0.02));
+  border: 1px solid rgba(30,132,73,0.25);
+  border-radius: 12px;
+  padding: 28px;
+  margin: 20px 0;
+}
+
+.example-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.example-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(30,132,73,0.15);
+  color: var(--accent-3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(30,132,73,0.3);
+}
+
+.example-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.example-problem {
+  font-size: 14px;
+  color: var(--ink);
+  background: rgba(255,255,255,0.6);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  border-left: 3px solid var(--accent-3);
+  line-height: 1.6;
+}
+
+.example-solution {
+  font-size: 14px;
+  color: #2d2520;
+  line-height: 1.8;
+}
+
+.example-solution .step-eq {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-3);
+  display: block;
+  margin: 8px 0;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 6px;
+}
+
+/* INFO BOX */
+.info-box {
+  display: flex;
+  gap: 16px;
+  background: rgba(36,113,163,0.06);
+  border: 1px solid rgba(36,113,163,0.2);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin: 16px 0;
+}
+
+.info-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.info-text { font-size: 14px; color: var(--ink); line-height: 1.6; }
+
+/* CONCEPT GRID */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  transition: border-color 0.2s;
+}
+
+.concept-card:hover { border-color: var(--ink); }
+
+.concept-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.concept-formula {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  margin-bottom: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.concept-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* TABLE */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13px;
+}
+
+.data-table th {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 10px 16px;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.data-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.data-table tr:nth-child(even) td { background: var(--surface2); }
+.data-table tr:hover td { background: rgba(0,0,0,0.03); }
+
+/* QUIZ */
+.quiz-section {
+  background: var(--surface2);
+  border-radius: 14px;
+  padding: 32px;
+  margin: 32px 0;
+  border: 1px solid var(--border);
+}
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.quiz-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.quiz-title { font-family: 'Playfair Display', serif; font-size: 18px; }
+
+.quiz-item { margin-bottom: 28px; }
+
+.quiz-q {
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.quiz-opts { display: grid; gap: 8px; }
+
+.quiz-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: var(--ink);
+  text-align: left;
+  width: 100%;
+}
+
+.quiz-opt:hover { border-color: var(--ink); }
+.quiz-opt.correct { border-color: #16a34a; background: rgba(22,163,74,0.08); color: #15803d; }
+.quiz-opt.wrong { border-color: #dc2626; background: rgba(220,38,38,0.06); color: #b91c1c; }
+.quiz-opt:disabled { cursor: default; }
+
+.quiz-letter {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.quiz-feedback-msg {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.quiz-feedback-msg.show { display: block; }
+.quiz-feedback-msg.ok { background: rgba(22,163,74,0.1); color: #15803d; border: 1px solid rgba(22,163,74,0.3); }
+.quiz-feedback-msg.nok { background: rgba(220,38,38,0.08); color: #b91c1c; border: 1px solid rgba(220,38,38,0.2); }
+
+/* MARK DONE BTN */
+.mark-done-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 12px 24px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.mark-done-btn:hover { background: #2d2520; transform: translateY(-1px); }
+.mark-done-btn.done-state { background: #15803d; }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 36px 0;
+}
+
+/* CALLOUT */
+.callout {
+  border-left: 4px solid;
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.callout.warning { border-color: var(--accent-4); background: rgba(212,137,10,0.07); }
+.callout.tip { border-color: var(--accent-3); background: rgba(30,132,73,0.07); }
+.callout.note { border-color: var(--accent-2); background: rgba(36,113,163,0.07); }
+
+.callout-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.callout.warning .callout-label { color: var(--accent-4); }
+.callout.tip .callout-label { color: var(--accent-3); }
+.callout.note .callout-label { color: var(--accent-2); }
+
+/* SUMMARY */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.summary-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.summary-item-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.summary-item-text { font-size: 14px; color: var(--ink); line-height: 1.5; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero, .chapter-header, .chapter-body { padding-left: 24px; padding-right: 24px; }
+  .summary-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-label">Curso Completo</div>
+    <div class="sidebar-logo-title">Física Geral</div>
+  </div>
+
+  <div class="sidebar-progress-wrap">
+    <div class="sidebar-progress-label">PROGRESSO GERAL</div>
+    <div class="sidebar-progress-bar">
+      <div class="sidebar-progress-fill" id="prog-fill"></div>
+    </div>
+    <div class="sidebar-progress-num" id="prog-num">0 de 5 módulos</div>
+  </div>
+
+  <div id="sidebar-nav"></div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Ensino Superior · Física Geral · Curso Completo</div>
+    <h1 class="hero-title">A Linguagem do<br><em>Universo Físico</em></h1>
+    <p class="hero-desc">Cinco grandes pilares da Física, do movimento à física moderna. Teoria rigorosa, exemplos resolvidos, derivações e exercícios interativos.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Módulos</div></div>
+      <div class="stat"><div class="stat-num">25+</div><div class="stat-label">Conceitos</div></div>
+      <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Exemplos</div></div>
+      <div class="stat"><div class="stat-num">25</div><div class="stat-label">Questões</div></div>
+    </div>
+  </section>
+
+  <!-- CHAPTERS -->
+  <div class="content" id="chapters"></div>
+
+</main>
+
+<script>
+const chapters = [
+  {
+    id: 0,
+    color: "#c0392b",
+    icon: "🔵",
+    num: "01",
+    title: "Mecânica Clássica",
+    subtitle: "Cinemática, Dinâmica, Energia e Momento",
+    topics: "4 seções · 6 exemplos · 5 questões",
+    sections: [
+      {
+        title: "Cinemática: Descrição do Movimento",
+        icon: "📐",
+        content: `
+<p class="prose">A <strong>Cinemática</strong> descreve o movimento dos corpos sem se preocupar com suas causas. Trabalhamos com três grandezas fundamentais: <strong>posição</strong> (x), <strong>velocidade</strong> (v) e <strong>aceleração</strong> (a), todas em função do tempo.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Definições Fundamentais</div>
+  <div class="formula-main">v = dx/dt &nbsp;&nbsp;&nbsp; a = dv/dt = d²x/dt²</div>
+  <div class="formula-desc">A velocidade é a derivada da posição e a aceleração é a derivada da velocidade em relação ao tempo.</div>
+</div>
+
+<p class="prose">Para o <strong>Movimento Uniformemente Variado (MRUV)</strong>, com aceleração constante, obtemos integrando as definições acima:</p>
+
+<div class="derivation">
+  <div class="deriv-title">Derivação das Equações do MRUV</div>
+  <div class="deriv-steps">
+    <div class="deriv-step"><div class="deriv-step-num">1</div><div class="deriv-step-text">Partimos de <strong>a = constante</strong> e integramos em relação ao tempo:<span class="deriv-step-eq">∫a dt = v → v = v₀ + at</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">2</div><div class="deriv-step-text">Integramos novamente para obter a posição:<span class="deriv-step-eq">∫v dt = x → x = x₀ + v₀t + ½at²</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">3</div><div class="deriv-step-text">Eliminando t entre as duas equações:<span class="deriv-step-eq">v² = v₀² + 2aΔx &nbsp; (Equação de Torricelli)</span></div></div>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 1</span><span class="example-title">Queda Livre</span></div>
+  <div class="example-problem">Um objeto é largado do repouso de uma altura de 45 m. Calcule: (a) o tempo de queda e (b) a velocidade ao atingir o solo. Use g = 10 m/s².</div>
+  <div class="example-solution">
+    <strong>(a) Tempo de queda:</strong> Com x₀ = 0, v₀ = 0, a = g = 10 m/s²:<br>
+    <span class="step-eq">45 = ½ · 10 · t² → t² = 9 → t = 3 s</span>
+    <strong>(b) Velocidade final:</strong> Usando v = v₀ + at:<br>
+    <span class="step-eq">v = 0 + 10 · 3 = 30 m/s</span>
+    <strong>Verificação com Torricelli:</strong>
+    <span class="step-eq">v² = 0 + 2 · 10 · 45 = 900 → v = 30 m/s ✓</span>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 2</span><span class="example-title">Lançamento Oblíquo</span></div>
+  <div class="example-problem">Um projétil é lançado com velocidade inicial v₀ = 20 m/s a 30° acima da horizontal. Encontre o alcance horizontal e a altura máxima. g = 10 m/s².</div>
+  <div class="example-solution">
+    <strong>Componentes iniciais:</strong>
+    <span class="step-eq">v₀ₓ = 20 cos30° = 20·(√3/2) ≈ 17,3 m/s</span>
+    <span class="step-eq">v₀ᵧ = 20 sen30° = 20·(0,5) = 10 m/s</span>
+    <strong>Altura máxima</strong> (quando vᵧ = 0):
+    <span class="step-eq">H = v₀ᵧ²/(2g) = 100/20 = 5 m</span>
+    <strong>Tempo de voo</strong> (subida + descida):
+    <span class="step-eq">T = 2·v₀ᵧ/g = 2·10/10 = 2 s</span>
+    <strong>Alcance horizontal:</strong>
+    <span class="step-eq">R = v₀ₓ · T = 17,3 · 2 ≈ 34,6 m</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Leis de Newton e Dinâmica",
+        icon: "⚖️",
+        content: `
+<p class="prose">A <strong>Dinâmica</strong> responde a pergunta que a Cinemática ignora: por que os corpos se movem assim? A resposta de Newton são três princípios que revolucionaram a física.</p>
+
+<div class="summary-grid">
+  <div class="summary-item"><div class="summary-item-title">1ª LEI — INÉRCIA</div><div class="summary-item-text">Se a força resultante sobre um corpo é nula, ele permanece em repouso ou em MRU. Todo corpo resiste à mudança de seu estado de movimento.</div></div>
+  <div class="summary-item"><div class="summary-item-title">2ª LEI — FORÇA</div><div class="summary-item-text">A força resultante é igual ao produto da massa pela aceleração: <strong>F = ma</strong>. Esta é a lei mais poderosa da mecânica clássica.</div></div>
+  <div class="summary-item"><div class="summary-item-title">3ª LEI — AÇÃO E REAÇÃO</div><div class="summary-item-text">Para toda ação há uma reação igual e oposta, atuando em corpos diferentes. Forças sempre ocorrem em pares.</div></div>
+  <div class="summary-item"><div class="summary-item-title">FORÇA GRAVITACIONAL</div><div class="summary-item-text">F = Gm₁m₂/r² — lei da gravitação universal de Newton, que unifica a queda de uma maçã com as órbitas dos planetas.</div></div>
+</div>
+
+<div class="callout tip"><div class="callout-label">💡 Dica de Método</div>Para resolver problemas de dinâmica: (1) Identifique o sistema; (2) Desenhe o Diagrama de Corpo Livre; (3) Escolha um sistema de coordenadas; (4) Aplique ΣF = ma para cada eixo.</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 3</span><span class="example-title">Plano Inclinado com Atrito</span></div>
+  <div class="example-problem">Um bloco de 5 kg está sobre um plano inclinado a 37° com coeficiente de atrito cinético μ = 0,3. Calcule a aceleração ao descer. g = 10 m/s², sen37° = 0,6, cos37° = 0,8.</div>
+  <div class="example-solution">
+    <strong>Forças no eixo paralelo ao plano (positivo = descida):</strong>
+    <span class="step-eq">mg·sen θ − f = ma</span>
+    <strong>Normal (eixo perpendicular):</strong>
+    <span class="step-eq">N = mg·cos θ = 5·10·0,8 = 40 N</span>
+    <strong>Força de atrito:</strong>
+    <span class="step-eq">f = μN = 0,3·40 = 12 N</span>
+    <strong>Aceleração:</strong>
+    <span class="step-eq">a = g·senθ − μg·cosθ = 10·(0,6 − 0,3·0,8) = 10·0,36 = 3,6 m/s²</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Energia, Trabalho e Potência",
+        icon: "⚡",
+        content: `
+<p class="prose">O conceito de <strong>energia</strong> é talvez o mais fundamental de toda a física. Ela não se cria nem se destrói — apenas muda de forma. O <strong>Teorema Trabalho-Energia</strong> conecta a dinâmica à energia de forma elegante.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Teorema Trabalho-Energia</div>
+  <div class="formula-main">W_total = ΔEc = ½mv² − ½mv₀²</div>
+  <div class="formula-desc">O trabalho resultante sobre um corpo é igual à variação de sua energia cinética. Este resultado decorre diretamente da 2ª Lei de Newton.</div>
+</div>
+
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-name">Trabalho</div><div class="concept-formula" style="color:var(--accent-1)">W = F·d·cosθ</div><div class="concept-desc">Produto escalar entre força e deslocamento. Medido em Joules (J).</div></div>
+  <div class="concept-card"><div class="concept-name">Energia Cinética</div><div class="concept-formula" style="color:var(--accent-2)">Ec = ½mv²</div><div class="concept-desc">Energia de movimento. Sempre ≥ 0.</div></div>
+  <div class="concept-card"><div class="concept-name">Energia Potencial Grav.</div><div class="concept-formula" style="color:var(--accent-3)">Ep = mgh</div><div class="concept-desc">Energia de posição em campo gravitacional uniforme.</div></div>
+  <div class="concept-card"><div class="concept-name">Potência</div><div class="concept-formula" style="color:var(--accent-4)">P = W/t = F·v</div><div class="concept-desc">Taxa de realização de trabalho. Medida em Watts (W).</div></div>
+  <div class="concept-card"><div class="concept-name">Energia Mecânica</div><div class="concept-formula" style="color:var(--accent-5)">Em = Ec + Ep</div><div class="concept-desc">Conservada quando não há forças dissipativas.</div></div>
+  <div class="concept-card"><div class="concept-name">Energia Elástica</div><div class="concept-formula" style="color:var(--accent-1)">Ee = ½kx²</div><div class="concept-desc">Energia armazenada em uma mola deformada de x.</div></div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 4</span><span class="example-title">Conservação de Energia num Looping</span></div>
+  <div class="example-problem">Uma esfera de 0,5 kg parte do repouso de uma altura h = 10 m e percorre um looping de raio R = 3 m. Determine: (a) a velocidade no topo do looping e (b) a força normal no topo. g = 10 m/s².</div>
+  <div class="example-solution">
+    <strong>(a) Velocidade no topo</strong> (altura = 2R = 6 m):
+    <span class="step-eq">mgh = ½mv² + mg(2R)</span>
+    <span class="step-eq">v² = 2g(h − 2R) = 2·10·(10−6) = 80 → v ≈ 8,9 m/s</span>
+    <strong>(b) Força normal no topo</strong> (centrípeta + peso):
+    <span class="step-eq">N + mg = mv²/R</span>
+    <span class="step-eq">N = m(v²/R − g) = 0,5·(80/3 − 10) = 0,5·16,7 ≈ 8,3 N</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Momento Linear e Colisões",
+        icon: "💥",
+        content: `
+<p class="prose">O <strong>momento linear</strong> (quantidade de movimento) é uma grandeza vetorial conservada em sistemas isolados. A conservação do momento é uma consequência direta da 3ª Lei de Newton e é válida mesmo quando a conservação de energia não se aplica.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Conservação do Momento Linear</div>
+  <div class="formula-main">p = mv &nbsp;&nbsp;&nbsp; Σp_antes = Σp_depois</div>
+  <div class="formula-desc">Em um sistema isolado (sem forças externas), o momento total é conservado. O impulso J = FΔt = Δp mede a variação do momento.</div>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Tipo de Colisão</th><th>Momento</th><th>Energia Cinética</th><th>Exemplo</th></tr></thead>
+  <tbody>
+    <tr><td>Perfeitamente Elástica</td><td>Conservado</td><td>Conservada</td><td>Bolas de bilhar (aproximado)</td></tr>
+    <tr><td>Perfeitamente Inelástica</td><td>Conservado</td><td>Não conservada</td><td>Colisão com corpos que se grudam</td></tr>
+    <tr><td>Parcialmente Inelástica</td><td>Conservado</td><td>Parcialmente perdida</td><td>Maioria das colisões reais</td></tr>
+  </tbody>
+</table>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 5</span><span class="example-title">Colisão Inelástica</span></div>
+  <div class="example-problem">Um carro de 1000 kg movendo a 20 m/s colide e se une a um caminhão de 3000 kg em repouso. Qual a velocidade final e qual porcentagem da energia cinética é perdida?</div>
+  <div class="example-solution">
+    <strong>Conservação do momento:</strong>
+    <span class="step-eq">m₁v₁ = (m₁+m₂)v_f</span>
+    <span class="step-eq">v_f = 1000·20/(1000+3000) = 20000/4000 = 5 m/s</span>
+    <strong>Energia antes:</strong>
+    <span class="step-eq">Ec_i = ½·1000·20² = 200.000 J</span>
+    <strong>Energia depois:</strong>
+    <span class="step-eq">Ec_f = ½·4000·5² = 50.000 J</span>
+    <strong>Percentual perdido:</strong>
+    <span class="step-eq">ΔEc/Ec_i = 150.000/200.000 = 75%</span>
+  </div>
+</div>
+`
+      }
+    ],
+    quiz: [
+      { q: "Um carro freia de 30 m/s a 0 em 6 s. Qual a distância percorrida durante a frenagem?", opts: ["45 m", "90 m", "135 m", "180 m"], ans: 1, fb: "d = (v₀+v)/2 · t = (30+0)/2 · 6 = 90 m. Ou use x = v₀t + ½at² com a = −5 m/s²." },
+      { q: "Uma força de 80 N age sobre um bloco de 10 kg em superfície sem atrito. Qual a aceleração?", opts: ["4 m/s²", "8 m/s²", "10 m/s²", "800 m/s²"], ans: 1, fb: "a = F/m = 80/10 = 8 m/s²" },
+      { q: "Uma pedra de 2 kg cai de 20 m de altura. Qual sua velocidade ao atingir o chão? (g=10)", opts: ["10 m/s", "14 m/s", "20 m/s", "40 m/s"], ans: 2, fb: "v = √(2gh) = √(400) = 20 m/s" },
+      { q: "Dois carros de 500 kg cada colidem frontalmente a 20 m/s cada um. Após a colisão inelástica, a velocidade final é:", opts: ["20 m/s", "10 m/s", "5 m/s", "0 m/s"], ans: 3, fb: "Momentos opostos se cancelam: 500·20 − 500·20 = 0. A velocidade final é zero." },
+      { q: "Uma mola de k = 200 N/m é comprimida 0,1 m. Qual a energia potencial elástica armazenada?", opts: ["1 J", "2 J", "10 J", "20 J"], ans: 0, fb: "Ee = ½kx² = ½·200·0,01 = 1 J" }
+    ]
+  },
+  {
+    id: 1,
+    color: "#2471a3",
+    icon: "⚡",
+    num: "02",
+    title: "Eletromagnetismo",
+    subtitle: "Eletrostática, Circuitos e Campo Magnético",
+    topics: "3 seções · 5 exemplos · 5 questões",
+    sections: [
+      {
+        title: "Eletrostática: Forças e Campos",
+        icon: "🔋",
+        content: `
+<p class="prose">A <strong>Eletrostática</strong> estuda as interações entre cargas elétricas em repouso. A força entre cargas foi quantificada por Coulomb em 1785 e tem a mesma estrutura matemática da gravitação de Newton — embora seja muitíssimo mais intensa.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Lei de Coulomb</div>
+  <div class="formula-main">F = k·|q₁q₂|/r² &nbsp;&nbsp; k = 9×10⁹ N·m²/C²</div>
+  <div class="formula-desc">A força entre duas cargas pontuais é proporcional ao produto das cargas e inversamente proporcional ao quadrado da distância. Atrativa para cargas opostas, repulsiva para iguais.</div>
+</div>
+
+<p class="prose">O conceito de <strong>campo elétrico</strong> E foi introduzido por Faraday para explicar como a força age à distância. O campo é uma propriedade do espaço criada pelas cargas-fonte.</p>
+
+<div class="derivation">
+  <div class="deriv-title">Do Campo Elétrico ao Potencial</div>
+  <div class="deriv-steps">
+    <div class="deriv-step"><div class="deriv-step-num">1</div><div class="deriv-step-text">Campo criado por carga puntual Q:<span class="deriv-step-eq">E = kQ/r² (direção radial)</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">2</div><div class="deriv-step-text">Potencial elétrico (energia por unidade de carga):<span class="deriv-step-eq">V = kQ/r</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">3</div><div class="deriv-step-text">Relação entre campo e potencial:<span class="deriv-step-eq">E = −dV/dr (E aponta de maior para menor V)</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">4</div><div class="deriv-step-text">Energia potencial de um par de cargas:<span class="deriv-step-eq">U = kq₁q₂/r</span></div></div>
+  </div>
+</div>
+
+<div class="callout note"><div class="callout-label">📌 Lei de Gauss</div>O fluxo elétrico total através de qualquer superfície fechada é igual à carga total encerrada dividida por ε₀: <strong>Φ = Q_enc/ε₀</strong>. Essa lei é equivalente à Lei de Coulomb mas muito mais poderosa para situações com simetria.</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 1</span><span class="example-title">Força de Coulomb</span></div>
+  <div class="example-problem">Duas cargas q₁ = +3 μC e q₂ = −6 μC estão separadas por 0,3 m. Calcule a força elétrica entre elas.</div>
+  <div class="example-solution">
+    <strong>Aplicando a Lei de Coulomb:</strong>
+    <span class="step-eq">F = k|q₁q₂|/r² = 9×10⁹ · |3×10⁻⁶ · 6×10⁻⁶| / (0,3)²</span>
+    <span class="step-eq">F = 9×10⁹ · 18×10⁻¹² / 0,09 = 162×10⁻³ / 0,09 = 1,8 N</span>
+    A força é <strong>atrativa</strong> pois as cargas têm sinais opostos.
+  </div>
+</div>
+`
+      },
+      {
+        title: "Circuitos Elétricos",
+        icon: "🔌",
+        content: `
+<p class="prose">A <strong>Lei de Ohm</strong> e as <strong>Leis de Kirchhoff</strong> são as ferramentas fundamentais para analisar qualquer circuito elétrico. Enquanto Ohm relaciona tensão, corrente e resistência, Kirchhoff codifica as leis de conservação.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Leis Fundamentais de Circuitos</div>
+  <div class="formula-main">V = R·I &nbsp;&nbsp;&nbsp; P = V·I = I²R = V²/R</div>
+  <div class="formula-desc">Lei de Ohm e potência dissipada. A resistência mede a oposição ao fluxo de corrente elétrica.</div>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Configuração</th><th>Resistência Equivalente</th><th>Corrente</th><th>Tensão</th></tr></thead>
+  <tbody>
+    <tr><td>Resistores em Série</td><td>R_eq = R₁ + R₂ + ...</td><td>Igual em todos</td><td>Divide-se entre eles</td></tr>
+    <tr><td>Resistores em Paralelo</td><td>1/R_eq = 1/R₁ + 1/R₂ + ...</td><td>Divide-se entre eles</td><td>Igual em todos</td></tr>
+    <tr><td>Capacitores em Série</td><td>1/C_eq = 1/C₁ + 1/C₂</td><td>Igual</td><td>Divide-se</td></tr>
+    <tr><td>Capacitores em Paralelo</td><td>C_eq = C₁ + C₂ + ...</td><td>Divide-se</td><td>Igual</td></tr>
+  </tbody>
+</table>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 2</span><span class="example-title">Circuito Misto</span></div>
+  <div class="example-problem">Um circuito tem R₁ = 6 Ω em série com a combinação paralela de R₂ = 4 Ω e R₃ = 12 Ω, ligados a uma bateria de 24 V. Calcule a corrente total e a potência dissipada.</div>
+  <div class="example-solution">
+    <strong>Resistência do paralelo:</strong>
+    <span class="step-eq">1/R_p = 1/4 + 1/12 = 3/12 + 1/12 = 4/12 → R_p = 3 Ω</span>
+    <strong>Resistência total:</strong>
+    <span class="step-eq">R_total = R₁ + R_p = 6 + 3 = 9 Ω</span>
+    <strong>Corrente total (Lei de Ohm):</strong>
+    <span class="step-eq">I = V/R = 24/9 ≈ 2,67 A</span>
+    <strong>Potência total:</strong>
+    <span class="step-eq">P = V·I = 24 · 2,67 ≈ 64 W</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Campo Magnético e Indução",
+        icon: "🧲",
+        content: `
+<p class="prose">Cargas em movimento criam <strong>campos magnéticos</strong>. A interação entre cargas móveis e campos magnéticos gera forças que são a base dos motores elétricos, geradores e transformadores.</p>
+
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-name">Força de Lorentz</div><div class="concept-formula" style="color:var(--accent-2)">F = qv × B</div><div class="concept-desc">Força sobre carga q com velocidade v em campo B. Perpendicular a ambos.</div></div>
+  <div class="concept-card"><div class="concept-name">Lei de Biot-Savart</div><div class="concept-formula" style="color:var(--accent-2)">dB = μ₀I dl × r̂ / (4πr²)</div><div class="concept-desc">Campo criado por um elemento de corrente elétrica.</div></div>
+  <div class="concept-card"><div class="concept-name">Lei de Faraday</div><div class="concept-formula" style="color:var(--accent-2)">ε = −dΦ_B/dt</div><div class="concept-desc">FEM induzida é oposta à variação do fluxo magnético (Lei de Lenz).</div></div>
+  <div class="concept-card"><div class="concept-name">Lei de Ampère</div><div class="concept-formula" style="color:var(--accent-2)">∮B·dl = μ₀I_enc</div><div class="concept-desc">Circulação de B em torno de uma curva fechada e corrente encerrada.</div></div>
+</div>
+
+<div class="info-box">
+  <span class="info-icon">🌊</span>
+  <span class="info-text"><strong>Equações de Maxwell</strong> — As quatro leis do eletromagnetismo (Gauss elétrico, Gauss magnético, Faraday e Ampère-Maxwell) formam um sistema completo que prediz a existência de ondas eletromagnéticas viajando à velocidade c = 1/√(μ₀ε₀) ≈ 3×10⁸ m/s, identificando a luz como onda eletromagnética.</span>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 3</span><span class="example-title">Força sobre Fio Condutor</span></div>
+  <div class="example-problem">Um fio de 0,5 m conduzindo 4 A está perpendicular a um campo magnético B = 0,3 T. Calcule a força magnética sobre o fio.</div>
+  <div class="example-solution">
+    <strong>Força em fio condutor em campo magnético:</strong>
+    <span class="step-eq">F = BIL·senθ = 0,3 · 4 · 0,5 · sen90°</span>
+    <span class="step-eq">F = 0,6 N</span>
+    A direção é dada pela regra da mão direita (ou produto vetorial IL × B).
+  </div>
+</div>
+`
+      }
+    ],
+    quiz: [
+      { q: "Duas cargas iguais de +2 μC estão separadas por 0,2 m. Qual a força de repulsão? (k = 9×10⁹)", opts: ["0,45 N", "0,9 N", "1,8 N", "3,6 N"], ans: 1, fb: "F = kq²/r² = 9×10⁹·(2×10⁻⁶)²/(0,04) = 9×10⁹·4×10⁻¹²/0,04 = 0,9 N" },
+      { q: "Um resistor de 10 Ω está ligado a 5 V. Qual a potência dissipada?", opts: ["0,5 W", "2,5 W", "5 W", "50 W"], ans: 1, fb: "P = V²/R = 25/10 = 2,5 W" },
+      { q: "Dois resistores de 6 Ω e 3 Ω estão em paralelo. Qual a resistência equivalente?", opts: ["9 Ω", "4,5 Ω", "3 Ω", "2 Ω"], ans: 3, fb: "1/R = 1/6 + 1/3 = 1/6 + 2/6 = 3/6 → R = 2 Ω" },
+      { q: "Uma bobina tem 100 espiras e o fluxo magnético varia de 0 a 0,05 Wb em 0,1 s. Qual a FEM induzida?", opts: ["0,5 V", "5 V", "50 V", "500 V"], ans: 2, fb: "ε = N·ΔΦ/Δt = 100·0,05/0,1 = 50 V" },
+      { q: "Uma carga de 2 C move-se a 3 m/s perpendicularmente a um campo de 0,5 T. Qual a força de Lorentz?", opts: ["0,75 N", "1,5 N", "3 N", "6 N"], ans: 2, fb: "F = qvB·senθ = 2·3·0,5·1 = 3 N" }
+    ]
+  },
+  {
+    id: 2,
+    color: "#1e8449",
+    icon: "🌡️",
+    num: "03",
+    title: "Termodinâmica",
+    subtitle: "Calor, Trabalho, Gases e Entropia",
+    topics: "3 seções · 4 exemplos · 5 questões",
+    sections: [
+      {
+        title: "Teoria Cinética e Gases Ideais",
+        icon: "🫧",
+        content: `
+<p class="prose">A <strong>Teoria Cinética dos Gases</strong> conecta o comportamento macroscópico (pressão, temperatura) ao movimento microscópico das moléculas. A temperatura, nessa visão, é simplesmente uma medida da energia cinética média das partículas.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Lei dos Gases Ideais + Energia Cinética Média</div>
+  <div class="formula-main">pV = nRT &nbsp;&nbsp;&nbsp;&nbsp; ⟨Ec⟩ = 3/2 k_B T</div>
+  <div class="formula-desc">n = número de mols, R = 8,314 J/(mol·K), T em Kelvin. k_B = 1,38×10⁻²³ J/K é a constante de Boltzmann.</div>
+</div>
+
+<div class="derivation">
+  <div class="deriv-title">Derivação da Pressão pela Teoria Cinética</div>
+  <div class="deriv-steps">
+    <div class="deriv-step"><div class="deriv-step-num">1</div><div class="deriv-step-text">Moléculas colidem com as paredes, transferindo impulso 2mv_x a cada colisão.</div></div>
+    <div class="deriv-step"><div class="deriv-step-num">2</div><div class="deriv-step-text">Contando colisões por unidade de tempo e área:<span class="deriv-step-eq">p = nm⟨v²⟩/3</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">3</div><div class="deriv-step-text">Comparando com pV = nRT obtemos:<span class="deriv-step-eq">⟨Ec⟩ = ½m⟨v²⟩ = 3/2 k_B T</span></div></div>
+    <div class="deriv-step"><div class="deriv-step-num">4</div><div class="deriv-step-text">Velocidade quadrática média:<span class="deriv-step-eq">v_rms = √(3RT/M) onde M = massa molar</span></div></div>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 1</span><span class="example-title">Gás Ideal — Processo Isobárico</span></div>
+  <div class="example-problem">2 mols de gás ideal à 300 K são aquecidos isobaricamente (p = 1 atm = 10⁵ Pa) até 600 K. Calcule o trabalho realizado pelo gás. R = 8,314 J/(mol·K).</div>
+  <div class="example-solution">
+    <strong>Em processo isobárico, W = pΔV = nRΔT:</strong>
+    <span class="step-eq">W = nRΔT = 2 · 8,314 · (600−300)</span>
+    <span class="step-eq">W = 2 · 8,314 · 300 = 4.988 J ≈ 5 kJ</span>
+    O gás se expande, realizando trabalho positivo sobre a vizinhança.
+  </div>
+</div>
+`
+      },
+      {
+        title: "As Leis da Termodinâmica",
+        icon: "♨️",
+        content: `
+<p class="prose">As quatro leis da termodinâmica são princípios universais que governam qualquer processo envolvendo calor e energia. Elas estabelecem limites fundamentais sobre o que é possível na natureza.</p>
+
+<div class="summary-grid">
+  <div class="summary-item"><div class="summary-item-title">LEI ZERO</div><div class="summary-item-text">Se A está em equilíbrio térmico com B e C está em equilíbrio com B, então A está em equilíbrio com C. Define a noção de temperatura.</div></div>
+  <div class="summary-item"><div class="summary-item-title">1ª LEI</div><div class="summary-item-text"><strong>ΔU = Q − W</strong> — A variação de energia interna é igual ao calor absorvido menos o trabalho realizado. Conservação de energia.</div></div>
+  <div class="summary-item"><div class="summary-item-title">2ª LEI</div><div class="summary-item-text">A entropia de um sistema isolado nunca diminui: <strong>ΔS ≥ 0</strong>. O calor flui espontaneamente do quente para o frio.</div></div>
+  <div class="summary-item"><div class="summary-item-title">3ª LEI</div><div class="summary-item-text">A entropia de um cristal perfeito tende a zero quando T → 0 K. É impossível atingir o zero absoluto.</div></div>
+</div>
+
+<div class="formula-box">
+  <div class="formula-label">Eficiência Máxima — Ciclo de Carnot</div>
+  <div class="formula-main">η_Carnot = 1 − T_fria/T_quente</div>
+  <div class="formula-desc">Nenhuma máquina térmica operando entre duas temperaturas pode ter eficiência maior que a de Carnot. Isso é uma consequência direta da 2ª Lei.</div>
+</div>
+
+<div class="callout warning"><div class="callout-label">⚠️ Atenção às Unidades</div>Nas fórmulas termodinâmicas, a temperatura <strong>deve estar em Kelvin</strong>. T(K) = T(°C) + 273,15. Nunca use Celsius ou Fahrenheit diretamente em cálculos com a lei dos gases ou eficiência de Carnot.</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 2</span><span class="example-title">Eficiência de uma Máquina Térmica</span></div>
+  <div class="example-problem">Uma máquina opera entre uma fonte quente a 500°C e uma fonte fria a 25°C. Qual a eficiência máxima de Carnot?</div>
+  <div class="example-solution">
+    <strong>Convertendo para Kelvin:</strong>
+    <span class="step-eq">T_q = 500 + 273 = 773 K &nbsp;&nbsp; T_f = 25 + 273 = 298 K</span>
+    <strong>Eficiência de Carnot:</strong>
+    <span class="step-eq">η = 1 − T_f/T_q = 1 − 298/773 = 1 − 0,385 ≈ 0,615 = 61,5%</span>
+    Nenhuma máquina real atingirá essa eficiência. A 2ª Lei garante isso.
+  </div>
+</div>
+`
+      }
+    ],
+    quiz: [
+      { q: "Um sistema absorve 800 J e realiza 300 J de trabalho. Qual é a variação de energia interna?", opts: ["1100 J", "500 J", "−500 J", "−1100 J"], ans: 1, fb: "ΔU = Q − W = 800 − 300 = 500 J" },
+      { q: "Uma máquina de Carnot opera entre 600 K e 300 K. Qual é sua eficiência?", opts: ["25%", "33%", "50%", "75%"], ans: 2, fb: "η = 1 − 300/600 = 1 − 0,5 = 50%" },
+      { q: "2 mols de gás ideal à 300 K. Qual é a energia interna total? (R = 8,314 J/mol·K, gás monoatômico)", opts: ["1247 J", "2494 J", "4988 J", "7482 J"], ans: 3, fb: "U = (3/2)nRT = 1,5 · 2 · 8,314 · 300 = 7483 J" },
+      { q: "Em um processo adiabático, qual das seguintes afirmações é verdadeira?", opts: ["Q = 0, ΔU = −W", "W = 0, ΔU = Q", "ΔU = 0", "Q = W"], ans: 0, fb: "Adiabático = sem troca de calor (Q = 0). Então pela 1ª Lei: ΔU = 0 − W = −W" },
+      { q: "Qual processo é sempre impossível segundo a 2ª Lei da Termodinâmica?", opts: ["Expansão isotérmica", "Calor fluindo do frio para o quente espontaneamente", "Compressão adiabática", "Aquecimento isobárico"], ans: 1, fb: "A 2ª Lei proíbe o fluxo espontâneo de calor do frio para o quente. Isso definiria uma diminuição de entropia." }
+    ]
+  },
+  {
+    id: 3,
+    color: "#d4890a",
+    icon: "🌊",
+    num: "04",
+    title: "Óptica e Ondas",
+    subtitle: "Ondas Mecânicas, Eletromagnéticas e Óptica Geométrica",
+    topics: "3 seções · 4 exemplos · 5 questões",
+    sections: [
+      {
+        title: "Ondas Mecânicas e MHS",
+        icon: "〰️",
+        content: `
+<p class="prose">Uma <strong>onda</strong> é uma perturbação que propaga energia sem transportar matéria. No <strong>Movimento Harmônico Simples (MHS)</strong>, a força restauradora é proporcional ao deslocamento: F = −kx, originando oscilações sinusoidais.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Equação de Onda e MHS</div>
+  <div class="formula-main">y(x,t) = A·sen(kx − ωt + φ) &nbsp;&nbsp;&nbsp; v = λ/T = λf</div>
+  <div class="formula-desc">A = amplitude; k = 2π/λ (número de onda); ω = 2πf (frequência angular); v = velocidade de propagação.</div>
+</div>
+
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-name">Pêndulo Simples</div><div class="concept-formula" style="color:var(--accent-4)">T = 2π√(L/g)</div><div class="concept-desc">Período independe da massa. Válido para ângulos pequenos (< 15°).</div></div>
+  <div class="concept-card"><div class="concept-name">Massa-Mola</div><div class="concept-formula" style="color:var(--accent-4)">T = 2π√(m/k)</div><div class="concept-desc">Período depende da massa e da constante da mola.</div></div>
+  <div class="concept-card"><div class="concept-name">Velocidade em Corda</div><div class="concept-formula" style="color:var(--accent-4)">v = √(T/μ)</div><div class="concept-desc">T = tensão na corda, μ = massa por unidade de comprimento.</div></div>
+  <div class="concept-card"><div class="concept-name">Efeito Doppler</div><div class="concept-formula" style="color:var(--accent-4)">f' = f(v ± v_obs)/(v ∓ v_fonte)</div><div class="concept-desc">Mudança de frequência observada devido ao movimento relativo.</div></div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 1</span><span class="example-title">Pêndulo e Massa-Mola</span></div>
+  <div class="example-problem">(a) Qual o período de um pêndulo de 2,5 m de comprimento? (b) Uma mola de k = 400 N/m com massa de 100 g oscila. Qual o período? g = 10 m/s².</div>
+  <div class="example-solution">
+    <strong>(a) Pêndulo:</strong>
+    <span class="step-eq">T = 2π√(L/g) = 2π√(2,5/10) = 2π·0,5 = π ≈ 3,14 s</span>
+    <strong>(b) Massa-Mola:</strong>
+    <span class="step-eq">T = 2π√(m/k) = 2π√(0,1/400) = 2π√(0,00025) = 2π·0,0158 ≈ 0,1 s</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Óptica Geométrica",
+        icon: "🔭",
+        content: `
+<p class="prose">A <strong>Óptica Geométrica</strong> estuda a luz quando os comprimentos de onda são muito menores que os objetos com os quais ela interage, permitindo tratar a luz como raios que seguem trajetórias definidas.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Lei de Snell-Descartes e Equação de Gauss</div>
+  <div class="formula-main">n₁ senθ₁ = n₂ senθ₂ &nbsp;&nbsp;&nbsp; 1/f = 1/do + 1/di</div>
+  <div class="formula-desc">Refração na interface entre meios. Equação de Gauss para lentes e espelhos: f = distância focal, do = objeto, di = imagem.</div>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Superfície</th><th>f > 0</th><th>f < 0</th><th>Ampliação</th></tr></thead>
+  <tbody>
+    <tr><td>Lente</td><td>Convergente</td><td>Divergente</td><td>M = −di/do</td></tr>
+    <tr><td>Espelho</td><td>Côncavo</td><td>Convexo</td><td>M = −di/do</td></tr>
+  </tbody>
+</table>
+
+<div class="info-box">
+  <span class="info-icon">🌈</span>
+  <span class="info-text"><strong>Ângulo crítico e reflexão total interna:</strong> Quando a luz passa de um meio mais denso para um menos denso, existe um ângulo θ_c = arcsen(n₂/n₁) acima do qual toda a luz é refletida. Este princípio é a base das fibras ópticas.</span>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 2</span><span class="example-title">Lente Convergente</span></div>
+  <div class="example-problem">Uma lente convergente tem f = 15 cm. Um objeto está a 20 cm da lente. Determine: (a) posição da imagem e (b) ampliação. A imagem é real ou virtual?</div>
+  <div class="example-solution">
+    <strong>(a) Equação de Gauss:</strong>
+    <span class="step-eq">1/di = 1/f − 1/do = 1/15 − 1/20 = 4/60 − 3/60 = 1/60</span>
+    <span class="step-eq">di = 60 cm (positivo → imagem real, do mesmo lado da luz saindo)</span>
+    <strong>(b) Ampliação linear:</strong>
+    <span class="step-eq">M = −di/do = −60/20 = −3</span>
+    Imagem <strong>real</strong>, <strong>invertida</strong> (M < 0) e <strong>ampliada 3×</strong>.
+  </div>
+</div>
+`
+      }
+    ],
+    quiz: [
+      { q: "Uma onda tem f = 440 Hz e comprimento de onda 0,77 m. Qual é sua velocidade?", opts: ["571 m/s", "440 m/s", "338 m/s", "220 m/s"], ans: 2, fb: "v = λf = 0,77 × 440 ≈ 338 m/s (velocidade do som no ar)" },
+      { q: "Um raio de luz passa do ar (n=1) para vidro (n=1,5) com θ₁ = 45°. Qual é θ₂?", opts: ["28,1°", "30°", "45°", "67,5°"], ans: 0, fb: "senθ₂ = n₁·senθ₁/n₂ = 1·sen45°/1,5 = 0,471 → θ₂ ≈ 28,1°" },
+      { q: "Uma lente divergente tem f = −20 cm. Um objeto está a 30 cm. Onde está a imagem?", opts: ["60 cm (real)", "12 cm (virtual)", "−12 cm (virtual)", "−60 cm (real)"], ans: 2, fb: "1/di = 1/(−20) − 1/30 = −3/60 − 2/60 = −5/60 → di = −12 cm (virtual)" },
+      { q: "Um pêndulo de 1 m oscila na Terra (g = 9,8 m/s²). Qual é seu período aproximado?", opts: ["1 s", "2 s", "3 s", "4 s"], ans: 1, fb: "T = 2π√(1/9,8) = 2π·0,319 ≈ 2 s" },
+      { q: "Uma fonte emite f = 1000 Hz. Um observador se aproxima a 34 m/s (v_som = 340 m/s). Qual f' ele ouve?", opts: ["900 Hz", "1000 Hz", "1100 Hz", "1200 Hz"], ans: 2, fb: "f' = f(v + v_obs)/v = 1000·(340+34)/340 = 1000·374/340 ≈ 1100 Hz" }
+    ]
+  },
+  {
+    id: 4,
+    color: "#7d3c98",
+    icon: "⚛️",
+    num: "05",
+    title: "Física Moderna",
+    subtitle: "Relatividade, Quântica e Física Nuclear",
+    topics: "3 seções · 4 exemplos · 5 questões",
+    sections: [
+      {
+        title: "Relatividade Especial de Einstein",
+        icon: "🚀",
+        content: `
+<p class="prose">Em 1905, Einstein propôs dois postulados que abalaram a física clássica: (1) as leis da física são idênticas em todos os referenciais inerciais; (2) a velocidade da luz no vácuo é constante para todos os observadores.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Fator de Lorentz e Relações Relativísticas</div>
+  <div class="formula-main">γ = 1/√(1−v²/c²) &nbsp;&nbsp;&nbsp; E = γmc²</div>
+  <div class="formula-desc">γ ≥ 1 é o fator de Lorentz. Em repouso, E₀ = mc² (energia de repouso). A energia cinética relativística é (γ−1)mc².</div>
+</div>
+
+<div class="summary-grid">
+  <div class="summary-item"><div class="summary-item-title">DILATAÇÃO DO TEMPO</div><div class="summary-item-text"><strong>Δt = γΔt₀</strong> — Um relógio em movimento tick mais devagar para um observador em repouso. Verificado com múons cósmicos e satélites GPS.</div></div>
+  <div class="summary-item"><div class="summary-item-title">CONTRAÇÃO DO ESPAÇO</div><div class="summary-item-text"><strong>L = L₀/γ</strong> — Um objeto em movimento parece mais curto na direção do movimento para um observador em repouso.</div></div>
+  <div class="summary-item"><div class="summary-item-title">MASSA-ENERGIA</div><div class="summary-item-text"><strong>E = mc²</strong> — A equação mais famosa da física. Massa é energia concentrada; pequenas massas correspondem a energias imensas.</div></div>
+  <div class="summary-item"><div class="summary-item-title">ENERGIA-MOMENTO</div><div class="summary-item-text"><strong>E² = (pc)² + (mc²)²</strong> — Relação relativística completa entre energia, momento e massa de repouso.</div></div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 1</span><span class="example-title">Dilatação do Tempo</span></div>
+  <div class="example-problem">Uma espaçonave viaja a v = 0,8c. Um astronauta mede 10 anos na viagem. Quanto tempo passou na Terra?</div>
+  <div class="example-solution">
+    <strong>Fator de Lorentz:</strong>
+    <span class="step-eq">γ = 1/√(1−0,64) = 1/√0,36 = 1/0,6 = 5/3 ≈ 1,667</span>
+    <strong>Tempo na Terra:</strong>
+    <span class="step-eq">Δt = γ·Δt₀ = 1,667 · 10 = 16,67 anos</span>
+    Enquanto o astronauta viveu 10 anos, na Terra passaram quase 17 anos.
+  </div>
+</div>
+`
+      },
+      {
+        title: "Mecânica Quântica",
+        icon: "🎯",
+        content: `
+<p class="prose">A <strong>Mecânica Quântica</strong> descreve a física na escala atômica e subatômica. Ela revela que a natureza é fundamentalmente probabilística e que partículas têm propriedades ondulatórias — e vice-versa.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Dualidade Onda-Partícula e Princípio da Incerteza</div>
+  <div class="formula-main">λ = h/p &nbsp;&nbsp;&nbsp; Δx·Δp ≥ ℏ/2</div>
+  <div class="formula-desc">λ = comprimento de onda de De Broglie; p = momento; h = 6,626×10⁻³⁴ J·s (constante de Planck). ℏ = h/2π. O princípio de Heisenberg limita a precisão simultânea de posição e momento.</div>
+</div>
+
+<div class="callout note"><div class="callout-label">📌 Efeito Fotoelétrico</div>Einstein (Nobel de 1921) mostrou que a luz é quantizada em fótons com energia E = hf. O efeito fotoelétrico ocorre quando a energia do fóton supera a função trabalho φ do metal: <strong>Ec_max = hf − φ</strong>. Esse experimento foi crucial para estabelecer o dualismo onda-partícula.</div>
+
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-name">Energia do Fóton</div><div class="concept-formula" style="color:var(--accent-5)">E = hf = hc/λ</div><div class="concept-desc">Quantum de energia eletromagnética. h = 6,626×10⁻³⁴ J·s.</div></div>
+  <div class="concept-card"><div class="concept-name">Átomo de Bohr</div><div class="concept-formula" style="color:var(--accent-5)">Eₙ = −13,6/n² eV</div><div class="concept-desc">Níveis de energia do átomo de hidrogênio. n = 1, 2, 3...</div></div>
+  <div class="concept-card"><div class="concept-name">Função de Onda</div><div class="concept-formula" style="color:var(--accent-5)">|ψ|² = probabilidade</div><div class="concept-desc">A equação de Schrödinger governa a evolução temporal de ψ.</div></div>
+  <div class="concept-card"><div class="concept-name">Tunelamento Quântico</div><div class="concept-formula" style="color:var(--accent-5)">T ≠ 0 se E < V₀</div><div class="concept-desc">Uma partícula pode atravessar barreiras de potencial classicamente proibidas.</div></div>
+</div>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 2</span><span class="example-title">Efeito Fotoelétrico</span></div>
+  <div class="example-problem">Luz de λ = 200 nm incide sobre uma superfície metálica com função trabalho φ = 4,5 eV. Os elétrons são ejetados? Se sim, qual a energia cinética máxima? (h = 6,626×10⁻³⁴ J·s, c = 3×10⁸ m/s, 1 eV = 1,6×10⁻¹⁹ J)</div>
+  <div class="example-solution">
+    <strong>Energia do fóton:</strong>
+    <span class="step-eq">E = hc/λ = (6,626×10⁻³⁴ · 3×10⁸) / (200×10⁻⁹)</span>
+    <span class="step-eq">E = 9,94×10⁻¹⁹ J = 9,94×10⁻¹⁹ / 1,6×10⁻¹⁹ = 6,21 eV</span>
+    <strong>Como E_fóton > φ, há ejeção. Energia cinética máxima:</strong>
+    <span class="step-eq">Ec_max = 6,21 − 4,5 = 1,71 eV = 2,74×10⁻¹⁹ J</span>
+  </div>
+</div>
+`
+      },
+      {
+        title: "Física Nuclear",
+        icon: "☢️",
+        content: `
+<p class="prose">O <strong>núcleo atômico</strong> é composto de prótons e nêutrons (nucleons) mantidos juntos pela força nuclear forte, que supera a repulsão coulombiana entre prótons. A diferença entre a massa dos nucleons livres e a do núcleo é a <strong>energia de ligação</strong>.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Energia de Ligação e Lei de Decaimento</div>
+  <div class="formula-main">E_lig = Δm·c² &nbsp;&nbsp;&nbsp; N(t) = N₀ · e^(−λt)</div>
+  <div class="formula-desc">Δm = defecto de massa. O decaimento radioativo é exponencial com constante λ. A meia-vida é t₁/₂ = ln2/λ ≈ 0,693/λ.</div>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Tipo</th><th>Partícula</th><th>Símbolo</th><th>Penetração</th></tr></thead>
+  <tbody>
+    <tr><td>Decaimento Alfa</td><td>Núcleo de He-4</td><td>⁴₂He</td><td>Baixa (papel)</td></tr>
+    <tr><td>Decaimento Beta⁻</td><td>Elétron + antineutrino</td><td>e⁻ + ν̄</td><td>Média (alumínio)</td></tr>
+    <tr><td>Decaimento Gama</td><td>Fóton de alta energia</td><td>γ</td><td>Alta (chumbo)</td></tr>
+    <tr><td>Fissão Nuclear</td><td>Fragmentos + nêutrons</td><td>—</td><td>Base dos reatores</td></tr>
+  </tbody>
+</table>
+
+<div class="example-box">
+  <div class="example-header"><span class="example-badge">EXEMPLO RESOLVIDO 3</span><span class="example-title">Meia-vida e Decaimento</span></div>
+  <div class="example-problem">O Carbono-14 tem meia-vida de 5730 anos. Uma amostra original tem N₀ = 10⁶ átomos. Quantos restarão após 17190 anos?</div>
+  <div class="example-solution">
+    <strong>Número de meias-vidas:</strong>
+    <span class="step-eq">n = t / t₁/₂ = 17190 / 5730 = 3 meias-vidas</span>
+    <strong>Átomos remanescentes:</strong>
+    <span class="step-eq">N = N₀ · (1/2)ⁿ = 10⁶ · (1/2)³ = 10⁶ / 8 = 125.000 átomos</span>
+    Este princípio é a base da datação por radiocarbono.
+  </div>
+</div>
+`
+      }
+    ],
+    quiz: [
+      { q: "Uma espaçonave viaja a v = 0,6c. Qual é o fator de Lorentz γ?", opts: ["0,8", "1,0", "1,25", "1,67"], ans: 2, fb: "γ = 1/√(1−0,36) = 1/√0,64 = 1/0,8 = 1,25" },
+      { q: "Um fóton tem λ = 400 nm. Qual é sua energia em eV? (h = 4,14×10⁻¹⁵ eV·s, c = 3×10⁸ m/s)", opts: ["1,2 eV", "2,1 eV", "3,1 eV", "6,2 eV"], ans: 2, fb: "E = hc/λ = 4,14×10⁻¹⁵ · 3×10⁸ / 4×10⁻⁷ = 3,1 eV" },
+      { q: "O nível de energia n=3 do hidrogênio é:", opts: ["−13,6 eV", "−3,4 eV", "−1,51 eV", "−0,85 eV"], ans: 2, fb: "Eₙ = −13,6/n² = −13,6/9 = −1,51 eV" },
+      { q: "Uma amostra radioativa tem t₁/₂ = 10 dias. Após 30 dias, qual fração original resta?", opts: ["1/2", "1/4", "1/8", "1/16"], ans: 2, fb: "30 dias = 3 meias-vidas. Resta (1/2)³ = 1/8 da amostra original." },
+      { q: "Qual afirmação sobre o Princípio da Incerteza de Heisenberg é correta?", opts: ["É uma limitação dos instrumentos de medição", "Reflete a natureza probabilística intrínseca da realidade quântica", "Aplica-se apenas a objetos macroscópicos", "Pode ser superado com tecnologia avançada"], ans: 1, fb: "A incerteza de Heisenberg é uma propriedade fundamental da natureza, não uma limitação tecnológica. É uma consequência da dualidade onda-partícula." }
+    ]
+  }
+];
+
+let completed = new Set();
+
+function buildSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = chapters.map(ch => `
+    <div class="nav-section-title">MÓDULO ${ch.num}</div>
+    <div class="nav-item ${completed.has(ch.id) ? 'done' : ''}" onclick="toggleChapter(${ch.id})" id="nav-${ch.id}">
+      <div class="nav-dot" style="background:${ch.color}"></div>
+      ${ch.title}
+    </div>
+    ${ch.sections.map(s => `<div class="nav-sub" onclick="toggleChapter(${ch.id})">↳ ${s.title}</div>`).join('')}
+  `).join('');
+}
+
+function buildChapters() {
+  const container = document.getElementById('chapters');
+  container.innerHTML = chapters.map(ch => `
+    <div class="chapter" id="ch-${ch.id}">
+      <div class="chapter-header" onclick="toggleChapter(${ch.id})" id="ch-hdr-${ch.id}">
+        <div class="chapter-num-badge" style="background:${ch.color}">${ch.num}</div>
+        <div class="chapter-info">
+          <div class="chapter-label">MÓDULO ${ch.num}</div>
+          <div class="chapter-title">${ch.title}</div>
+          <div class="chapter-meta">${ch.subtitle} &nbsp;·&nbsp; ${ch.topics}</div>
+        </div>
+        <div class="chapter-status-badge ${completed.has(ch.id) ? 'done' : ''}" id="status-${ch.id}">${completed.has(ch.id) ? '✓ CONCLUÍDO' : 'NÃO INICIADO'}</div>
+        <div class="chapter-toggle">▼</div>
+      </div>
+      <div class="chapter-body" id="ch-body-${ch.id}">
+        ${ch.sections.map((sec, si) => `
+          <div class="section">
+            <div class="section-title"><span class="section-icon">${sec.icon}</span>${sec.title}</div>
+            ${sec.content}
+          </div>
+          ${si < ch.sections.length - 1 ? '<hr class="divider">' : ''}
+        `).join('')}
+
+        <hr class="divider">
+
+        <!-- QUIZ -->
+        <div class="quiz-section">
+          <div class="quiz-header">
+            <span class="quiz-badge">QUIZ DO MÓDULO</span>
+            <span class="quiz-title">Teste seus Conhecimentos — ${ch.title}</span>
+          </div>
+          ${ch.quiz.map((q, qi) => `
+            <div class="quiz-item" id="qitem-${ch.id}-${qi}">
+              <div class="quiz-q">${qi+1}. ${q.q}</div>
+              <div class="quiz-opts" id="qopts-${ch.id}-${qi}">
+                ${q.opts.map((opt, oi) => `
+                  <button class="quiz-opt" onclick="answerQ(${ch.id},${qi},${oi})">
+                    <span class="quiz-letter">${String.fromCharCode(65+oi)}</span>
+                    ${opt}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="quiz-feedback-msg" id="qfb-${ch.id}-${qi}"></div>
+            </div>
+          `).join('')}
+        </div>
+
+        <button class="mark-done-btn" onclick="markDone(${ch.id})" id="doneBtn-${ch.id}">
+          ✓ &nbsp; MARCAR MÓDULO COMO CONCLUÍDO
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleChapter(id) {
+  const body = document.getElementById(`ch-body-${id}`);
+  const hdr = document.getElementById(`ch-hdr-${id}`);
+  const isOpen = body.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.chapter-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chapter-header').forEach(h => h.classList.remove('open'));
+
+  if (!isOpen) {
+    body.classList.add('open');
+    hdr.classList.add('open');
+    document.getElementById(`ch-${id}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (!isOpen) document.getElementById(`nav-${id}`).classList.add('active');
+}
+
+function answerQ(chId, qIdx, optIdx) {
+  const ch = chapters[chId];
+  const q = ch.quiz[qIdx];
+  const opts = document.querySelectorAll(`#qopts-${chId}-${qIdx} .quiz-opt`);
+  const fb = document.getElementById(`qfb-${chId}-${qIdx}`);
+
+  opts.forEach(b => b.disabled = true);
+
+  if (optIdx === q.ans) {
+    opts[optIdx].classList.add('correct');
+    fb.className = 'quiz-feedback-msg show ok';
+    fb.textContent = '✓ Correto! ' + q.fb;
+  } else {
+    opts[optIdx].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback-msg show nok';
+    fb.textContent = '✗ Incorreto. ' + q.fb;
+  }
+}
+
+function markDone(id) {
+  completed.add(id);
+  const btn = document.getElementById(`doneBtn-${id}`);
+  btn.classList.add('done-state');
+  btn.textContent = '✓  MÓDULO CONCLUÍDO';
+  btn.disabled = true;
+
+  document.getElementById(`status-${id}`).className = 'chapter-status-badge done';
+  document.getElementById(`status-${id}`).textContent = '✓ CONCLUÍDO';
+
+  document.getElementById(`nav-${id}`).classList.add('done');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = (completed.size / chapters.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-num').textContent = `${completed.size} de ${chapters.length} módulos`;
+}
+
+buildChapters();
+buildSidebar();
+updateProgress();
+
+// Open first chapter by default
+toggleChapter(0);
+</script>
+</body>
+</html>
